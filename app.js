@@ -10,6 +10,7 @@ var flash = require('express-flash');
 var methodOverride = require('method-override');
 
 var routes = require('./routes/index');
+var sessionController= require('./controllers/session_controller');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(partials());
 app.use(flash());
 
+
 // Helper dinamico:
 app.use(function(req, res, next) {
 
@@ -51,7 +53,8 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
+//autologout 
+app.use(sessionController.autologout);
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
