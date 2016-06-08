@@ -35,13 +35,28 @@ exports.ownershipRequired = function(req, res, next){
 
 // GET /quizzes
 exports.index = function(req, res, next) {
-	models.Quiz.findAll()
+  var search= req.query.search || "";
+  if (search === ""){
+  	models.Quiz.findAll()
 		.then(function(quizzes) {
 			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
 		.catch(function(error) {
 			next(error);
 		});
+  }
+  else{
+    var s= "%"+ search.replace(" ","%") + "%";
+    models.Quiz.findAll({where: [ "question like ?", s], order: ['question']})
+    .then(function(quizzes) {
+      quizzes.sort();
+      res.render('quizzes/index.ejs',{quizzes:quizzes});
+    })
+    .catch(function (error) {
+      next(error);
+      
+    });
+  }
 };
 
 
